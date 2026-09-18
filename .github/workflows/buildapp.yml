@@ -167,10 +167,11 @@ jobs:
         run: |
           cd main/Tweaks/YTUHD
           git submodule update --init --recursive
-          make libvpx
-          make dav1d
+          make libvpx SIDELOAD=1
+          make dav1d SIDELOAD=1
         env:
           THEOS: ${{ github.workspace }}/theos
+          THEOS_PROJECT_DIR: ${{ github.workspace }}/main/Tweaks/YTUHD
       - name: Fix compiling & Build Package
         id: build_package
         run: |
@@ -178,7 +179,7 @@ jobs:
           sed -i '' "s/^BUNDLE_ID .*/BUNDLE_ID = ${{ inputs.bundle_id }}/" Makefile || echo "BUNDLE_ID = ${{ inputs.bundle_id }}" >> Makefile
           sed -i '' "s/^DISPLAY_NAME .*/DISPLAY_NAME = ${{ inputs.app_name }}/" Makefile || echo "DISPLAY_NAME = ${{ inputs.app_name }}" >> Makefile
           sed -i '' "s/^export TARGET .*/export TARGET = iphone:clang:${{ inputs.sdk_version }}:16.0/" Makefile || echo "export TARGET = iphone:clang:${{ inputs.sdk_version }}:16.0" >> Makefile
-          make package THEOS_PACKAGE_SCHEME=rootless IPA=Payload/YouTube.app FINALPACKAGE=1 YTUHD_ENABLED=${{ inputs.ytuhd && '1' || '0' }} SPONSORBLOCK_ENABLED=${{ inputs.sponsorblock && '1' || '0' }}
+          make package SIDELOAD=1 THEOS_PACKAGE_SCHEME=rootless IPA=Payload/YouTube.app FINALPACKAGE=1 YTUHD_ENABLED=${{ inputs.ytuhd && '1' || '0' }} SPONSORBLOCK_ENABLED=${{ inputs.sponsorblock && '1' || '0' }}
           echo "package=$(ls -t packages | head -n1)" >> $GITHUB_OUTPUT
 
         env:
