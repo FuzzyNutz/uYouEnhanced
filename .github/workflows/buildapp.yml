@@ -78,7 +78,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          brew install ldid dpkg make wget unzip jq pipx
+          brew install ldid dpkg make wget unzip jq pipx meson ninja
 
       - name: Set PATH
         run: echo "$(brew --prefix make)/libexec/gnubin" >> $GITHUB_PATH
@@ -162,7 +162,13 @@ jobs:
 
         env:
           YOUTUBE_URL: ${{ env.URL_YT }}
-
+      - name: Build YTUHD Dependencies
+        if: ${{ inputs.ytuhd }}
+        run: |
+          cd main/Tweaks/YTUHD
+          git submodule update --init --recursive
+          make libvpx
+          make dav1d
       - name: Fix compiling & Build Package
         id: build_package
         run: |
