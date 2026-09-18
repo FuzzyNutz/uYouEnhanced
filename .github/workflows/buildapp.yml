@@ -169,6 +169,8 @@ jobs:
           git submodule update --init --recursive
           make libvpx
           make dav1d
+        env:
+          THEOS: ${{ github.workspace }}/theos
       - name: Fix compiling & Build Package
         id: build_package
         run: |
