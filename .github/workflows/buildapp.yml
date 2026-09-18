@@ -166,7 +166,7 @@ jobs:
         if: ${{ inputs.ytuhd }}
         run: |
           cd main/Tweaks/YTUHD
-          sed -i '' '1s|^|YTUHD_DIR := $$(CURDIR)\n\n|' Makefile
+          sed -i '' '1s|^|YTUHD_DIR := ${{ github.workspace }}/main/Tweaks/YTUHD\n\n|' Makefile
           sed -i '' 's|$(THEOS_PROJECT_DIR)/vendor/libvpx_ios|$(YTUHD_DIR)/vendor/libvpx_ios|g' Makefile
           sed -i '' 's|$(THEOS_PROJECT_DIR)/vendor/dav1d_ios|$(YTUHD_DIR)/vendor/dav1d_ios|g' Makefile
           sed -i '' 's|$(THEOS_PROJECT_DIR)/vendor/libvpx|$(YTUHD_DIR)/vendor/libvpx|g' Makefile
