@@ -156,6 +156,8 @@ jobs:
           cd main
           mv YouTube.ipa YouTube.zip
           unzip -q YouTube.zip
+          /usr/libexec/PlistBuddy -c "Set :UIFileSharingEnabled true" Payload/YouTube.app/Info.plist || /usr/libexec/PlistBuddy -c "Add :UIFileSharingEnabled bool true" Payload/YouTube.app/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :LSSupportsOpeningDocumentsInPlace true" Payload/YouTube.app/Info.plist || /usr/libexec/PlistBuddy -c "Add :LSSupportsOpeningDocumentsInPlace bool true" Payload/YouTube.app/Info.plist
           youtube_version=$(defaults read "$(pwd)/Payload/YouTube.app/Info" CFBundleVersion)
           echo "YT_VERSION=$youtube_version" >> $GITHUB_ENV
           echo "youtube_version=${youtube_version}" >> $GITHUB_OUTPUT
