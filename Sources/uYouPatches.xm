@@ -342,6 +342,29 @@ static BOOL uYouConvertWebmAudioToM4a(NSString *webmPath, NSString *m4aPath) {
     return NO;
 }
 
+// uYouItem derives tmpAudioPath from downloadIdentifier + audioFormat and has
+// no tmpAudioPath setter: KVC on that key throws NSUnknownKeyException, which
+// the hooks below used to swallow before bailing out without calling %orig.
+// Point the item at the converted file by switching audioFormat instead, then
+// verify that tmpAudioPath now names the m4a we just wrote.
+static BOOL UYTPointItemAtConvertedAudio(id uyouItem, NSString *webmPath, NSString *m4aPath) {
+    @try {
+        [uyouItem setValue:@"m4a" forKey:@"audioFormat"];
+        NSString *now = [uyouItem valueForKey:@"tmpAudioPath"];
+        if (![now isEqualToString:m4aPath]) {
+            HBLogWarn(@"[uYouPatches] tmpAudioPath is %@ after conversion, expected %@", now, m4aPath);
+            return NO;
+        }
+        // Nothing references the .webm source any more; reclaim the space.
+        [[NSFileManager defaultManager] removeItemAtPath:webmPath error:nil];
+        HBLogInfo(@"[uYouPatches] item now points at converted audio %@", m4aPath);
+        return YES;
+    } @catch (NSException *e) {
+        HBLogWarn(@"[uYouPatches] could not point item at converted audio: %@", e);
+        return NO;
+    }
+}
+
 // Post-conversion check: is the item's audio still WebM? If yes, calling
 // %orig would hang forever inside AVAssetExportSession (it never completes
 // an mp4+webm merge and never throws), so callers must skip the merge.
