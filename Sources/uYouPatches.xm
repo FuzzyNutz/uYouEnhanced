@@ -309,27 +309,6 @@ static BOOL uYouConvertWebmAudioToM4a(NSString *webmPath, NSString *m4aPath, uYo
 NSString *title = uyouItem.title ?: @"";
 NSString *artist = uyouItem.channel ?: @"";
 
-NSString *thumbnailPath = nil;
-NSString *videoID = uyouItem.videoID;
-
-if (videoID.length > 0) {
-    NSString *thumbnailURLString =
-        [NSString stringWithFormat:@"https://i.ytimg.com/vi/%@/hqdefault.jpg", videoID];
-    NSURL *thumbnailURL = [NSURL URLWithString:thumbnailURLString];
-
-    NSData *thumbnailData = [NSData dataWithContentsOfURL:thumbnailURL];
-
-    if (thumbnailData.length > 0) {
-        thumbnailPath = [NSTemporaryDirectory()
-            stringByAppendingPathComponent:
-                [NSString stringWithFormat:@"%@_cover.jpg", videoID]];
-
-        if (![thumbnailData writeToFile:thumbnailPath atomically:YES]) {
-            thumbnailPath = nil;
-        }
-    }
-}
-
 NSArray *arguments = @[
     @"-i", webmPath,
     @"-vn",
