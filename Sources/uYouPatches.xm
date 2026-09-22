@@ -860,23 +860,6 @@ static void UYTArmStallWatchdog(id item, NSTimeInterval seconds) {
     %orig;
 }
 %end
-// Create a properly named Files-accessible copy after a download completes.
-%hook NSNotificationCenter
-- (void)postNotificationName:(NSNotificationName)name object:(id)object {
-    %orig;
-
-    if ([name isEqualToString:@"downloadDidCompleteNotification"] && object) {
-        @try {
-            id uyouItem = [object valueForKey:@"uYouItem"];
-            if (uyouItem) {
-                UYTCreateNamedAudioCopy(uyouItem);
-            }
-        } @catch (NSException *e) {
-            HBLogWarn(@"[uYouPatches] Could not create named audio copy after completion: %@", e);
-        }
-    }
-}
-%end
 %end // gYouDownloadFixes
 
 // uYou Speed Control Fixes - #681, #795
