@@ -306,14 +306,19 @@ static BOOL uYouConvertWebmAudioToM4a(NSString *webmPath, NSString *m4aPath, uYo
 
     @try {
         // Use MobileFFmpeg (same as uYou's convertAsyncMkvToMp4) to convert webm to m4a
-        NSArray *arguments = @[
-            @"-i", webmPath,
-            @"-vn",                // No video
-            @"-acodec", @"aac",    // Encode to AAC for m4a compatibility
-            @"-strict", @"-2",     // Allow experimental codecs
-            @"-y",                 // Overwrite output
-            m4aPath
-        ];
+NSString *title = uyouItem.title ?: @"";
+NSString *artist = uyouItem.channel ?: @"";
+
+NSArray *arguments = @[
+    @"-i", webmPath,
+    @"-vn",
+    @"-acodec", @"aac",
+    @"-strict", @"-2",
+    @"-metadata", [NSString stringWithFormat:@"title=%@", title],
+    @"-metadata", [NSString stringWithFormat:@"artist=%@", artist],
+    @"-y",
+    m4aPath
+];
 
         // IMPORTANT: MobileFFmpeg ships inside uYou.dylib's payload and is NOT
         // linked against this tweak. A bare [MobileFFmpeg ...] reference emits
