@@ -293,7 +293,7 @@ static NSInteger uYouActiveDownloadCount = 0;
 // AVAssetExportSession which CANNOT merge mp4 video + webm audio,
 // causing downloads to hang forever at "conversion" or "Adding metadata".
 // Fix: detect webm audio and convert it to m4a via MobileFFmpeg before merge.
-static BOOL uYouConvertWebmAudioToM4a(NSString *webmPath, NSString *m4aPath) {
+static BOOL uYouConvertWebmAudioToM4a(NSString *webmPath, NSString *m4aPath, uYouItem *uyouItem) {
     if (!webmPath || !m4aPath) return NO;
 
     NSFileManager *fm = [NSFileManager defaultManager];
