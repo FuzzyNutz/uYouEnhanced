@@ -610,7 +610,7 @@ static void UYTArmStallWatchdog(id item, NSTimeInterval seconds) {
             if (audioPath && [[audioPath pathExtension] isEqualToString:@"webm"]) {
                 NSString *m4aPath = [[audioPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"m4a"];
                 if (uYouConvertWebmAudioToM4a(audioPath, m4aPath)) {
-                    [uyouItem setValue:m4aPath forKey:@"tmpAudioPath"];
+                    UYTPointItemAtConvertedAudio(uyouItem, audioPath, m4aPath);
                     HBLogInfo(@"[uYouPatches] Converted webm audio to m4a for merge: %@", m4aPath);
                 } else {
                     HBLogWarn(@"[uYouPatches] WebM→M4A conversion failed, merge may hang: %@", audioPath);
