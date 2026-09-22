@@ -636,7 +636,7 @@ static void UYTArmStallWatchdog(id item, NSTimeInterval seconds) {
             if (!audioPath) audioPath = [uyouItem valueForKey:@"cachedAudioPath"];
             if (audioPath && [[audioPath pathExtension] isEqualToString:@"webm"]) {
                 NSString *m4aPath = [[audioPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"m4a"];
-                if (uYouConvertWebmAudioToM4a(audioPath, m4aPath)) {
+                if (uYouConvertWebmAudioToM4a(audioPath, m4aPath, uyouItem)) {
                     UYTPointItemAtConvertedAudio(uyouItem, audioPath, m4aPath);
                 }
             }
