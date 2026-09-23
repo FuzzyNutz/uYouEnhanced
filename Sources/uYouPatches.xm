@@ -387,53 +387,6 @@ static NSString *UYTSafeFilename(NSString *title) {
     return safe.length ? safe : @"Downloaded Audio";
 }
 
-// Create a user-visible copy of completed audio using the video's title.
-// Keep uYou's original internal file untouched so its database/path remains valid.
-
-        NSFileManager *fm = [NSFileManager defaultManager];
-        if (![fm fileExistsAtPath:sourcePath]) return;
-
-        NSString *title = nil;
-        if ([uyouItem respondsToSelector:@selector(title)]) {
-            title = [uyouItem valueForKey:@"title"];
-        }
-
-        NSString *safeTitle = UYTSafeFilename(title);
-
-        NSString *docs =
-            [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                                 NSUserDomainMask,
-                                                 YES) lastObject];
-
-        NSString *exportDir =
-            [docs stringByAppendingPathComponent:@"uYouDownloads"];
-
-        [fm createDirectoryAtPath:exportDir
-      withIntermediateDirectories:YES
-                       attributes:nil
-                            error:nil];
-
-        NSString *destination =
-            [exportDir stringByAppendingPathComponent:
-                [safeTitle stringByAppendingPathExtension:@"m4a"]];
-
-        // Don't overwrite an existing song with the same title.
-        if ([fm fileExistsAtPath:destination]) {
-            HBLogInfo(@"[uYouPatches] Named audio copy already exists: %@", destination);
-            return;
-        }
-
-        NSError *error = nil;
-        if ([fm copyItemAtPath:sourcePath toPath:destination error:&error]) {
-            HBLogInfo(@"[uYouPatches] Created named audio copy: %@", destination);
-        } else {
-            HBLogWarn(@"[uYouPatches] Failed creating named audio copy: %@", error);
-        }
-    } @catch (NSException *e) {
-        HBLogWarn(@"[uYouPatches] Named audio copy failed: %@", e);
-    }
-}
-
 // Post-conversion check: is the item's audio still WebM? If yes, calling
 // %orig would hang forever inside AVAssetExportSession (it never completes
 // an mp4+webm merge and never throws), so callers must skip the merge.
