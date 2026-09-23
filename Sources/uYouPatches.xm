@@ -389,15 +389,6 @@ static NSString *UYTSafeFilename(NSString *title) {
 
 // Create a user-visible copy of completed audio using the video's title.
 // Keep uYou's original internal file untouched so its database/path remains valid.
-static void UYTCreateNamedAudioCopy(id uyouItem) {
-    @try {
-        if (!uyouItem) return;
-
-        NSString *sourcePath = [uyouItem filePath];
-        if (!sourcePath.length ||
-            ![[sourcePath pathExtension].lowercaseString isEqualToString:@"m4a"]) {
-            return;
-        }
 
         NSFileManager *fm = [NSFileManager defaultManager];
         if (![fm fileExistsAtPath:sourcePath]) return;
