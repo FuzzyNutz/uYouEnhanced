@@ -199,7 +199,7 @@ static NSString *UYTGetResolvedURL(NSString *vid) {
 
     @try {
         NSLog(@"[UYTPipeline] title = %@", [uYouItem valueForKey:@"title"]);
-        NSLog(@"[UYTPipeline] uYouItem.filePath = %@", [uYouItem filePath]);
+        NSLog(@"[UYTPipeline] uYouItem.filePath = %@", [uYouItem valueForKey:@"filePath"]);
     } @catch (NSException *e) {
         NSLog(@"[UYTPipeline] diagnostic failed: %@", e);
     }
