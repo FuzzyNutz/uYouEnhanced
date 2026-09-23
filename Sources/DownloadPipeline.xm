@@ -191,22 +191,55 @@ static NSString *UYTGetResolvedURL(NSString *vid) {
            cachedPath:(id)cachedPath
                  type:(int)type {
 
-    NSLog(@"[UYTPipeline] DownloadItem init:");
-    NSLog(@"[UYTPipeline] videoID = %@", videoID);
-    NSLog(@"[UYTPipeline] downloadID = %@", downloadID);
-    NSLog(@"[UYTPipeline] filePath = %@", filePath);
-    NSLog(@"[UYTPipeline] cachedPath = %@", cachedPath);
+    NSMutableString *debug = [NSMutableString string];
+
+    [debug appendFormat:@"DownloadItem init\n"];
+    [debug appendFormat:@"videoID = %@\n", videoID];
+    [debug appendFormat:@"downloadID = %@\n", downloadID];
+    [debug appendFormat:@"filePath ARG = %@\n", filePath];
+    [debug appendFormat:@"cachedPath ARG = %@\n", cachedPath];
 
     @try {
-        NSLog(@"[UYTPipeline] title = %@", [uYouItem valueForKey:@"title"]);
-        NSLog(@"[UYTPipeline] uYouItem.filePath = %@", [uYouItem valueForKey:@"filePath"]);
+        [debug appendFormat:@"title = %@\n", [uYouItem valueForKey:@"title"]];
+        [debug appendFormat:@"uYouItem.filePath = %@\n",
+            [uYouItem valueForKey:@"filePath"]];
     } @catch (NSException *e) {
-        NSLog(@"[UYTPipeline] diagnostic failed: %@", e);
+        [debug appendFormat:@"diagnostic exception = %@\n", e];
     }
 
-    return %orig(videoID, uYouItem, downloadID, url, filePath, cachedPath, type);
-}
+    [debug appendString:@"\n"];
 
+    NSString *docs =
+        [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                             NSUserDomainMask,
+                                             YES) firstObject];
+
+    NSString *debugPath =
+        [docs stringByAppendingPathComponent:@"UYTPipelineDebug.txt"];
+
+    NSFileManager *fm = [NSFileManager defaultManager];
+
+    if (![fm fileExistsAtPath:debugPath]) {
+        [debug writeToFile:debugPath
+                atomically:YES
+                  encoding:NSUTF8StringEncoding
+                     error:nil];
+    } else {
+        NSFileHandle *handle =
+            [NSFileHandle fileHandleForWritingAtPath:debugPath];
+
+        [handle seekToEndOfFile];
+
+        NSData *data =
+            [debug dataUsingEncoding:NSUTF8StringEncoding];
+
+        [handle writeData:data];
+        [handle closeFile];
+    }
+
+    return %orig(videoID, uYouItem, downloadID, url,
+                 filePath, cachedPath, type);
+}
 - (void)setRemoteURL:(NSURL *)url {
     NSString *vid = self.videoID ?: @"";
     NSString *working = UYTGetResolvedURL(vid);
