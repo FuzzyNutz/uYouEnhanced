@@ -370,22 +370,6 @@ static BOOL UYTPointItemAtConvertedAudio(id uyouItem, NSString *webmPath, NSStri
     }
 }
 
-// Make a filesystem-safe filename from a uYou title.
-static NSString *UYTSafeFilename(NSString *title) {
-    if (!title.length) return @"Downloaded Audio";
-
-    NSCharacterSet *invalidChars =
-        [NSCharacterSet characterSetWithCharactersInString:@"/:\\?%*|\"<>"];
-
-    NSArray *parts = [title componentsSeparatedByCharactersInSet:invalidChars];
-    NSString *safe = [parts componentsJoinedByString:@"-"];
-
-    if (safe.length > 180) {
-        safe = [safe substringToIndex:180];
-    }
-
-    return safe.length ? safe : @"Downloaded Audio";
-}
 
 // Post-conversion check: is the item's audio still WebM? If yes, calling
 // %orig would hang forever inside AVAssetExportSession (it never completes
